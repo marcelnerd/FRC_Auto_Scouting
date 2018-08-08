@@ -17,7 +17,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
 
     private final static String SQL_CREATE_ENTRIES = "CREATE TABLE teams (teamID INTEGER PRIMARY KEY, score INT, name VARCHAR(30))";
-    private final static String SQL_DELETE_ENTRIES = "DROP IF TABLE EXISTS teams";
+    private final static String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS teams";
     public final static String SQL_TABLE_NAME = "teams";
     private Context context;
 
@@ -91,6 +91,7 @@ public class DBHelper extends SQLiteOpenHelper {
             // TODO Update current score
             // TODO Insert new score into database
         }
+        // TODO Return row ID of new row or return -1
     }
 
     public String getTeamData(int teamID) {
