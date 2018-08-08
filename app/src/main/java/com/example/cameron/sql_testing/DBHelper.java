@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -82,16 +83,27 @@ public class DBHelper extends SQLiteOpenHelper {
         return newRowId;
     }
 
-    public long updateTeamStats(int teamID, int score, String name) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + " WHERE teamID=" + teamID + ";", null);
+    public void updateTeamStats(int teamID, int score, String name) {
+        int oldScore, newScore;
+        SQLiteDatabase dbr = this.getReadableDatabase();
+        SQLiteDatabase dbw = this.getWritableDatabase();
+        Cursor cursor = dbr.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + " WHERE teamID=" + teamID + ";", null);
 
         if(cursor.moveToNext()) {
             // TODO Get current score
+            oldScore = cursor.getInt(1);
             // TODO Update current score
+            newScore = oldScore + score;
             // TODO Insert new score into database
+            dbw.execSQL("UPDATE teams SET score=" + newScore + " WHERE teamID='" + teamID + "';");
+            Log.v("minto", "UPDATE ONE");
+
         }
-        // TODO Return row ID of new row or return -1
+        else {
+            // TODO Create new team row
+            dbw.execSQL("INSERT INTO " + SQL_TABLE_NAME + " VALUES (" + teamID + ", " + score + ", '" + name + "');");
+            Log.d("minto", "INSERT ONE");
+        }
     }
 
     public String getTeamData(int teamID) {
