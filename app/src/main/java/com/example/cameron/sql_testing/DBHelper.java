@@ -90,17 +90,13 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = dbr.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + " WHERE teamID=" + teamID + ";", null);
 
         if(cursor.moveToNext()) {
-            // TODO Get current score
             oldScore = cursor.getInt(1);
-            // TODO Update current score
             newScore = oldScore + score;
-            // TODO Insert new score into database
             dbw.execSQL("UPDATE teams SET score=" + newScore + " WHERE teamID='" + teamID + "';");
             Log.v("minto", "UPDATE ONE");
 
         }
         else {
-            // TODO Create new team row
             dbw.execSQL("INSERT INTO " + SQL_TABLE_NAME + " VALUES (" + teamID + ", " + score + ", '" + name + "');");
             Log.d("minto", "INSERT ONE");
         }
