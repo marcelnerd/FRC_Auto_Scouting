@@ -10,6 +10,7 @@ import org.json.JSONObject;
 public class TBAListener implements Response.Listener<JSONObject> {
 
     TextView textBox;
+    JSONObject json;
 
     public TBAListener() {
 
@@ -17,10 +18,17 @@ public class TBAListener implements Response.Listener<JSONObject> {
 
     @Override
     public void onResponse(JSONObject response) {
+
         //textBox.setText("Response: " + response.toString());
         Log.d("minto", "Response: " + response);
-        Log.d("minto", "GOT TO HERE");
+        this.json = response;
 
+        //Log.d("minto", "GOT TO HERE");
+
+    }
+
+    public JSONObject getJson() {
+        return json;
     }
 
 }

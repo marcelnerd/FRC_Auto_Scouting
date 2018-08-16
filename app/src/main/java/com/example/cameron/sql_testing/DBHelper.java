@@ -10,9 +10,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+
+import static com.example.cameron.sql_testing.MatchUpdater.getMatchData;
 
 public class DBHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
@@ -20,7 +26,9 @@ public class DBHelper extends SQLiteOpenHelper {
     private final static String SQL_CREATE_ENTRIES = "CREATE TABLE teams (teamID INTEGER PRIMARY KEY, score INT, name VARCHAR(30))";
     private final static String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS teams";
     public final static String SQL_TABLE_NAME = "teams";
+    public static String nextMatch;
     private Context context;
+    private MatchUpdater updater;
 
 
     public static final int DATABASE_VERSION = 1;
@@ -29,6 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
+        updater = new MatchUpdater();
     }
 
     public void onCreate(SQLiteDatabase db) {
@@ -83,7 +92,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return newRowId;
     }
 
-    public void updateTeamStats(int teamID, int score, String name) {
+    public void updateTeamStats(int teamID, int score, String name, int teleopPoints, int autoPoints) {
         int oldScore, newScore;
         SQLiteDatabase dbr = this.getReadableDatabase();
         SQLiteDatabase dbw = this.getWritableDatabase();
@@ -99,6 +108,23 @@ public class DBHelper extends SQLiteOpenHelper {
         else {
             dbw.execSQL("INSERT INTO " + SQL_TABLE_NAME + " VALUES (" + teamID + ", " + score + ", '" + name + "');");
             Log.d("minto", "INSERT ONE");
+        }
+    }
+
+    public void enterNewMatch(JSONObject json) {
+        HashMap<String, Object>[] teamMap = null;
+        try {
+            teamMap = MatchUpdater.getMatchData(json);
+        }catch(JSONException e) {
+            e.printStackTrace();
+            Log.d("minto", "YOU FUCKED UP");
+        }
+        SQLiteDatabase dbr = this.getReadableDatabase();
+        SQLiteDatabase dbw = this.getWritableDatabase();
+
+        for(int i = 0; i < 6; i++) {
+            Log.d("minto", teamMap[i].get("teamNumber").toString());
+
         }
     }
 

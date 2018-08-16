@@ -35,14 +35,12 @@ public class MainActivity extends AppCompatActivity {
         button = findViewById(R.id.button);
         helper = new DBHelper(this);
         handler = new TBAHandler(this);
-        //helper.enterData(223, 4, "the bois");
-        handler.getTeamData("fdfdf");
+        //helper.enterNewMatch
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                helper.updateTeamStats(243, 7, "the vois");
-                textBox.setText(helper.getTeamData(243 ));
+
             }
         });
     }
