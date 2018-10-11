@@ -9,7 +9,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TBAHandler {
 
@@ -17,32 +21,57 @@ public class TBAHandler {
     private static final String eventKey = "2018mndu";
     private static final int currentYear = 2018;
     public static JSONObject json;
-    RequestQueue queue;
+    private RequestQueue queue;
 
 
     public TBAHandler(Context context) {
         queue = Volley.newRequestQueue(context);
+        queue.start();
     }
 
     public void getMatchData(String call) {
         TBAListener listener = new TBAListener();
+        HashMap[] map = null;
 
         //String fullURL = baseURL + call;
         String fullURL = baseURL + "/match/2018mndu_qm1";
         //Log.d("minto", fullURL);
-        //Log.d("minto", "https://www.thebluealliance.com/api/v3/match/2018mndu_qm1");
 
         TBAJSONRequest request = new TBAJSONRequest(Request.Method.GET, fullURL, null, listener, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
             Log.d("minto", "DID NOT WORK");
-            Log.d("minto", error.toString());
+            error.printStackTrace();
             }
         });
         queue.add(request);
 
+       /* while(!listener.hasJson()) {
+            //THIS IS SUPPOSED TO BE EMPTY
+            Log.d("minto", "In while loop");
+        }
+        Log.d("minto", "GOT PAST WHILE LOOP");
+
+        try {
+            map = MatchUpdater.getMatchData(listener.getJson());
+        }
+        catch(JSONException e) {
+            e.printStackTrace();
+            Log.d("minto", "Error fetching JSON");
+        }
+
+        Log.d("minto", map.toString());
+
+
+       /* for(HashMap e : map) {
+           for (Map.Entry entry : e.entrySet()) {
+                Log.d("minto", entry.getKey() + " : " + entry.getValue());
+            }
+        } */
+        //
 
     }
+
 
     public static String getMatch(int matchNum) {
         return String.format("/match/%1$s_qm%2$d", eventKey, matchNum);

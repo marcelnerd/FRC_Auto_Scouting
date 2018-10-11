@@ -1,5 +1,7 @@
 package com.example.cameron.sql_testing;
 
+import android.util.Log;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -13,6 +15,7 @@ public class TBAJSONRequest extends JsonObjectRequest {
 
     public TBAJSONRequest(int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> listener, Response.ErrorListener eListener) {
         super(method, url, jsonRequest, listener, eListener);
+        Log.d("minto", url);
     }
 
     @Override

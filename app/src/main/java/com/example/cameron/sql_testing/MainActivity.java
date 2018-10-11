@@ -35,7 +35,9 @@ public class MainActivity extends AppCompatActivity {
         button = findViewById(R.id.button);
         helper = new DBHelper(this);
         handler = new TBAHandler(this);
-        //helper.enterNewMatch
+        handler.getMatchData(String.format("/match/%1$s_qm%2$d", "2018_mndu", 1));
+        //handler.getMatchData();
+
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
