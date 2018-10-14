@@ -21,27 +21,27 @@ import java.util.HashMap;
 import static com.example.cameron.sql_testing.MatchUpdater.getMatchData;
 
 public class DBHelper extends SQLiteOpenHelper {
-    // If you change the database schema, you must increment the database version.
 
-    private final static String SQL_CREATE_ENTRIES = "CREATE TABLE teams (teamID INTEGER PRIMARY KEY, score INT, name VARCHAR(30))";
+    private final static String SQL_CREATE_ENTRIES = "CREATE TABLE teams (teamID INTEGER PRIMARY KEY, teleopPoints INT, autoPoints INT);";
     private final static String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS teams";
     public final static String SQL_TABLE_NAME = "teams";
     public static String nextMatch;
     private Context context;
     private MatchUpdater updater;
 
-
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "ScoutData.db";
+    public static final String DATABASE_NAME = "ScoutDat.db";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
-        updater = new MatchUpdater();
+        SQLiteDatabase d = this.getWritableDatabase();
+        d.close();
     }
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
+//        SQLiteDatabase d = this.getWritableDatabase();
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
@@ -52,6 +52,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
+
 
     private void executeSQLScript(SQLiteDatabase database, String dbname) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -80,65 +81,52 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public long enterData(int teamID, int score, String name) {
-        long newRowId;
-
+    public void updateTeamStats(FRC2018Team team) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("teamID", teamID);
-        values.put("score", score);
-        values.put("name", name);
-        newRowId = db.insert(SQL_TABLE_NAME, null, values);
-        return newRowId;
-    }
 
-    public void updateTeamStats(int teamID, int score, String name, int teleopPoints, int autoPoints) {
-        int oldScore, newScore;
-        SQLiteDatabase dbr = this.getReadableDatabase();
-        SQLiteDatabase dbw = this.getWritableDatabase();
-        Cursor cursor = dbr.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + " WHERE teamID=" + teamID + ";", null);
+
+        int oldTeleop, newTeleop, oldAutoP, newAutoP;
+
+        int teleop = team.getTeleopPoints();
+        int teamID = team.getTeamNum();
+        int autoPoints = team.getAutoPoints();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + " WHERE teamID=" + teamID + ";", null);
 
         if(cursor.moveToNext()) {
-            oldScore = cursor.getInt(1);
-            newScore = oldScore + score;
-            dbw.execSQL("UPDATE teams SET score=" + newScore + " WHERE teamID='" + teamID + "';");
-            Log.v("minto", "UPDATE ONE");
+            ////****UPDATE TELEOP****////
+            oldTeleop = cursor.getInt(1);
+            newTeleop = oldTeleop + teleop;
+            db.execSQL("UPDATE teams SET teleopPoints='" + newTeleop + "' WHERE teamID='" + teamID + "';");
+            //Log.v("minto", "UPDATE ONE");
+
+            ////****UPDATE AUTO SCORE****////
+            oldAutoP = cursor.getInt(2);
+            newAutoP = autoPoints + oldAutoP;
+            db.execSQL("UPDATE teams SET autoPoints=" + newAutoP + " WHERE teamID='" + teamID + "';");
 
         }
         else {
-            dbw.execSQL("INSERT INTO " + SQL_TABLE_NAME + " VALUES (" + teamID + ", " + score + ", '" + name + "');");
+            db.execSQL("INSERT INTO " + SQL_TABLE_NAME + " VALUES (" + teamID + ", " + teleop + ", '" + autoPoints + "');");
             Log.d("minto", "INSERT ONE");
         }
-    }
 
-    public void enterNewMatch(JSONObject json) {
-        HashMap<String, Object>[] teamMap = null;
-        try {
-            teamMap = MatchUpdater.getMatchData(json);
-        }catch(JSONException e) {
-            e.printStackTrace();
-            Log.d("minto", "YOU FUCKED UP");
-        }
-        SQLiteDatabase dbr = this.getReadableDatabase();
-        SQLiteDatabase dbw = this.getWritableDatabase();
-
-        for(int i = 0; i < 6; i++) {
-            Log.d("minto", teamMap[i].get("teamNumber").toString());
-
-        }
+        db.close();
+        Log.v("minto", getTeamData(93));
     }
 
     public String getTeamData(int teamID) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         String returnString = "";
         Cursor cursor;
         cursor = db.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + " WHERE teamID=" + Integer.toString(teamID) + ";", null);
 
         while(cursor.moveToNext()) {
-            returnString += "Team ID: " + Integer.toString(cursor.getInt(0)) + "  Score: " + Integer.toString(cursor.getInt(1)) + "   Name: " + cursor.getString(2);
+            returnString += "Team ID: " + Integer.toString(cursor.getInt(0)) + "  Teleop: " + Integer.toString(cursor.getInt(1)) + "   Auto Points: " + cursor.getInt(2);
         }
 
         cursor.close();
+        db.close();
 
         return returnString;
     }

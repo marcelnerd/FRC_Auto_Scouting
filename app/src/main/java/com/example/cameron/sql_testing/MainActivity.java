@@ -1,5 +1,6 @@
 package com.example.cameron.sql_testing;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.database.sqlite.*;
@@ -22,18 +23,22 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    DBHelper helper;
+    public static Context c;
+    public DatabaseContainer container = new DatabaseContainer(this);
     public TextView textBox;
     Button button;
     TBAHandler handler;
 
+    //public DBHelper helper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        c = getBaseContext();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textBox = findViewById(R.id.textBox);
         button = findViewById(R.id.button);
-        helper = new DBHelper(this);
+        //helper = new DBHelper(this);
         handler = new TBAHandler(this);
         handler.getMatchData(String.format("/match/%1$s_qm%2$d", "2018_mndu", 1));
         //handler.getMatchData();
@@ -42,10 +47,12 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                handler.getMatchData(String.format("/match/%1$s_qm%2$d", "2018_mndu", 1));
+                textBox.setText(handler.helper.getTeamData(93));
             }
         });
     }
+
 
 
 }

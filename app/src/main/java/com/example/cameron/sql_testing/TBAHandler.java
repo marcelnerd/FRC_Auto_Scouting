@@ -22,15 +22,17 @@ public class TBAHandler {
     private static final int currentYear = 2018;
     public static JSONObject json;
     private RequestQueue queue;
+    public static DBHelper helper;
 
 
     public TBAHandler(Context context) {
+        helper = new DBHelper(MainActivity.c);
         queue = Volley.newRequestQueue(context);
         queue.start();
     }
 
     public void getMatchData(String call) {
-        TBAListener listener = new TBAListener();
+        TBAListener listener = new TBAListener(helper);
         HashMap[] map = null;
 
         //String fullURL = baseURL + call;
@@ -44,31 +46,8 @@ public class TBAHandler {
             error.printStackTrace();
             }
         });
+
         queue.add(request);
-
-       /* while(!listener.hasJson()) {
-            //THIS IS SUPPOSED TO BE EMPTY
-            Log.d("minto", "In while loop");
-        }
-        Log.d("minto", "GOT PAST WHILE LOOP");
-
-        try {
-            map = MatchUpdater.getMatchData(listener.getJson());
-        }
-        catch(JSONException e) {
-            e.printStackTrace();
-            Log.d("minto", "Error fetching JSON");
-        }
-
-        Log.d("minto", map.toString());
-
-
-       /* for(HashMap e : map) {
-           for (Map.Entry entry : e.entrySet()) {
-                Log.d("minto", entry.getKey() + " : " + entry.getValue());
-            }
-        } */
-        //
 
     }
 
