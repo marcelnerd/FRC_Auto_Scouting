@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.database.sqlite.*;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
     Button button;
     TBAHandler handler;
 
-    //public DBHelper helper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         c = getBaseContext();
@@ -40,15 +39,19 @@ public class MainActivity extends AppCompatActivity {
         button = findViewById(R.id.button);
         //helper = new DBHelper(this);
         handler = new TBAHandler(this);
-        handler.getMatchData(String.format("/match/%1$s_qm%2$d", "2018_mndu", 1));
+        //handler.getMatchData(String.format("/match/%1$s_qm%2$d", "2018_mndu", 1));
         //handler.getMatchData();
-
+        Log.v("minto", handler.helper.getAllEntries());
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handler.getMatchData(String.format("/match/%1$s_qm%2$d", "2018_mndu", 1));
-                textBox.setText(handler.helper.getTeamData(93));
+                for(int i = 1; i < 90; i++) {
+                    handler.getMatchData(String.format("/match/%1$s_qm%2$d", "2018mndu", i));
+                }
+
+                //textBox.setText(handler.helper.getTeamData(93));
+                Log.v("minto", handler.helper.getAllEntries());
             }
         });
     }

@@ -22,7 +22,7 @@ public class TBAHandler {
     private static final int currentYear = 2018;
     public static JSONObject json;
     private RequestQueue queue;
-    public static DBHelper helper;
+    public static DBHelper helper; //This helper can be accessed statically by any class.
 
 
     public TBAHandler(Context context) {
@@ -32,11 +32,11 @@ public class TBAHandler {
     }
 
     public void getMatchData(String call) {
-        TBAListener listener = new TBAListener(helper);
+        TBAListener listener = new TBAListener(helper); // The helper is passed to the listner.
         HashMap[] map = null;
 
-        //String fullURL = baseURL + call;
-        String fullURL = baseURL + "/match/2018mndu_qm1";
+        String fullURL = baseURL + call;
+        //String fullURL = baseURL + "/match/2018mndu_qm1";
         //Log.d("minto", fullURL);
 
         TBAJSONRequest request = new TBAJSONRequest(Request.Method.GET, fullURL, null, listener, new Response.ErrorListener() {

@@ -30,6 +30,7 @@ public class TBAListener implements Response.Listener<JSONObject> {
     public void onResponse(JSONObject response) {
         HashMap[] map = null;
         FRC2018Team team = null;
+        Log.v("minto", response.toString());
 
         //Log.d("minto", "Response: " + response);
         this.json = response;

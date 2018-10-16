@@ -49,6 +49,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_ENTRIES);
         onCreate(db);
     }
+
+
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
@@ -108,11 +110,11 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         else {
             db.execSQL("INSERT INTO " + SQL_TABLE_NAME + " VALUES (" + teamID + ", " + teleop + ", '" + autoPoints + "');");
-            Log.d("minto", "INSERT ONE");
+            Log.v("minto", "INSERT ONE");
         }
 
         db.close();
-        Log.v("minto", getTeamData(93));
+        //Log.v("minto", getTeamData(93));
     }
 
     public String getTeamData(int teamID) {
@@ -128,6 +130,22 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
 
+        return returnString;
+    }
+
+    public String getAllEntries() {
+        SQLiteDatabase db = this .getWritableDatabase();
+        String returnString = "";
+        Cursor cursor;
+        cursor = db.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + ";", null);
+
+       while(cursor.moveToNext()) {
+            Log.v("minto", "Team ID: " + Integer.toString(cursor.getInt(0)) + "  Teleop: " + Integer.toString(cursor.getInt(1)) + "   Auto Points: " + cursor.getInt(2));
+            returnString += "Team ID: " + Integer.toString(cursor.getInt(0)) + "  Teleop: " + Integer.toString(cursor.getInt(1)) + "   Auto Points: " + cursor.getInt(2);
+        }
+
+        cursor.close();
+        db.close();
         return returnString;
     }
 }
