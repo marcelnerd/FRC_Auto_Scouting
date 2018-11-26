@@ -30,9 +30,16 @@ public class TBAListener implements Response.Listener<JSONObject> {
     public void onResponse(JSONObject response) {
         HashMap[] map = null;
         FRC2018Team team = null;
-        Log.v("minto", response.toString());
+        //Log.v("minto", response.toString());
 
-        //Log.d("minto", "Response: " + response);
+        try {
+            if (Integer.parseInt(response.getString("match_number")) < MainActivity.getCurrentMatch()) {
+                return;
+            }
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+
         this.json = response;
         try {
             map = MatchUpdater.getMatchData(response);
@@ -40,6 +47,13 @@ public class TBAListener implements Response.Listener<JSONObject> {
             e.printStackTrace();
         }
 
+
+        try {
+        } catch(Exception e) {
+            //fuck you
+        }
+
+        MainActivity.setCurrentMatch(MainActivity.getCurrentMatch() + 1);
         for (HashMap e : map) {
             team = buildTeam(e.entrySet());
             helper.updateTeamStats(team);

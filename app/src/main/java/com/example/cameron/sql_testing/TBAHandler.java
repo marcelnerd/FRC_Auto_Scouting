@@ -42,7 +42,7 @@ public class TBAHandler {
         TBAJSONRequest request = new TBAJSONRequest(Request.Method.GET, fullURL, null, listener, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-            Log.d("minto", "DID NOT WORK");
+            Log.d("minto", "Creation of request threw exception");
             error.printStackTrace();
             }
         });

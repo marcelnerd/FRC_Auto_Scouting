@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:\Users\Cameron\AndroidStudioProjects\HubitatMobile\SQL_Testing\FRC_Auto_Scouting.iml" filepath="C:\Users\Cameron\AndroidStudioProjects\HubitatMobile\SQL_Testing\FRC_Auto_Scouting.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FRC_Auto_Scouting.iml" filepath="$PROJECT_DIR$/FRC_Auto_Scouting.iml" />
       <module fileurl="file://$PROJECT_DIR$/SQL_Testing.iml" filepath="$PROJECT_DIR$/SQL_Testing.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

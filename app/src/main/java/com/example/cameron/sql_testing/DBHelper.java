@@ -16,13 +16,14 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.example.cameron.sql_testing.MatchUpdater.getMatchData;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private final static String SQL_CREATE_ENTRIES = "CREATE TABLE teams (teamID INTEGER PRIMARY KEY, teleopPoints INT, autoPoints INT);";
+    private final static String SQL_CREATE_ENTRIES = "CREATE TABLE teams (_id INTEGER PRIMARY KEY, teleopPoints INT, autoPoints INT);";
     private final static String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS teams";
     public final static String SQL_TABLE_NAME = "teams";
     public static String nextMatch;
@@ -90,26 +91,26 @@ public class DBHelper extends SQLiteOpenHelper {
         int oldTeleop, newTeleop, oldAutoP, newAutoP;
 
         int teleop = team.getTeleopPoints();
-        int teamID = team.getTeamNum();
+        int _id = team.getTeamNum();
         int autoPoints = team.getAutoPoints();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + " WHERE teamID=" + teamID + ";", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + " WHERE _id=" + _id + ";", null);
 
         if(cursor.moveToNext()) {
             ////****UPDATE TELEOP****////
             oldTeleop = cursor.getInt(1);
             newTeleop = oldTeleop + teleop;
-            db.execSQL("UPDATE teams SET teleopPoints='" + newTeleop + "' WHERE teamID='" + teamID + "';");
+            db.execSQL("UPDATE teams SET teleopPoints='" + newTeleop + "' WHERE _id='" + _id + "';");
             //Log.v("minto", "UPDATE ONE");
 
             ////****UPDATE AUTO SCORE****////
             oldAutoP = cursor.getInt(2);
             newAutoP = autoPoints + oldAutoP;
-            db.execSQL("UPDATE teams SET autoPoints=" + newAutoP + " WHERE teamID='" + teamID + "';");
+            db.execSQL("UPDATE teams SET autoPoints=" + newAutoP + " WHERE _id='" + _id + "';");
 
         }
         else {
-            db.execSQL("INSERT INTO " + SQL_TABLE_NAME + " VALUES (" + teamID + ", " + teleop + ", '" + autoPoints + "');");
+            db.execSQL("INSERT INTO " + SQL_TABLE_NAME + " VALUES (" + _id + ", " + teleop + ", '" + autoPoints + "');");
             Log.v("minto", "INSERT ONE");
         }
 
@@ -117,11 +118,11 @@ public class DBHelper extends SQLiteOpenHelper {
         //Log.v("minto", getTeamData(93));
     }
 
-    public String getTeamData(int teamID) {
+    public String getTeamData(int _id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String returnString = "";
         Cursor cursor;
-        cursor = db.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + " WHERE teamID=" + Integer.toString(teamID) + ";", null);
+        cursor = db.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + " WHERE _id=" + Integer.toString(_id) + ";", null);
 
         while(cursor.moveToNext()) {
             returnString += "Team ID: " + Integer.toString(cursor.getInt(0)) + "  Teleop: " + Integer.toString(cursor.getInt(1)) + "   Auto Points: " + cursor.getInt(2);
@@ -147,5 +148,30 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return returnString;
+    }
+
+    public Cursor getAllEntriesCursor() {
+        SQLiteDatabase db = this .getWritableDatabase();
+        String returnString = "";
+        Cursor cursor;
+        cursor = db.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + ";", null);
+
+        return cursor;
+    }
+
+    public ArrayList<FRC2018Team> getAllEntriesList() {
+        SQLiteDatabase db = this .getWritableDatabase();
+        ArrayList<FRC2018Team> list = new ArrayList<>();
+        Cursor cursor;
+        cursor = db.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + ";", null);
+
+        while(cursor.moveToNext()) {
+            Log.v("minto", "Team ID: " + Integer.toString(cursor.getInt(0)) + "  Teleop: " + Integer.toString(cursor.getInt(1)) + "   Auto Points: " + cursor.getInt(2));
+            list.add(new FRC2018Team(false, cursor.getInt(2), false, cursor.getInt(0), cursor.getInt(1), 0));
+        }
+
+        cursor.close();
+        db.close();
+        return list;
     }
 }
