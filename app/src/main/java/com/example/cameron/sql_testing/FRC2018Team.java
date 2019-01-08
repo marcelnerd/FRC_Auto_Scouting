@@ -82,6 +82,10 @@ public class FRC2018Team {
         this.vaultPoints = vaultPoints;
     }
 
+    public int getMatchesPlayed() {
+        return matchesPlayed;
+    }
+
     public int getAutoRunBit() {
         if(autoRun) {
             return 1;

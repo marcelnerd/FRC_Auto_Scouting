@@ -98,13 +98,18 @@ public class DBHelper extends SQLiteOpenHelper {
         int vaultPoints = team.getVaultPoints();
         int autoRun = team.getAutoRunBit();
         int climb = team.getClimbBit();
+        matches = team.getMatchesPlayed();
 
         Cursor cursor = db.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + " WHERE _id=" + _id + ";", null);
 
-        if(cursor.moveToNext()) {
+        if(cursor.moveToNext()) { // There is already an entry for the team, updates the entry
+
+            Log.d("minto", "updating team " + _id);
+
+            cursor.moveToLast();
 
             ////****UPDATE MATCHES PLAYED****////
-            matches = cursor.getInt(7);
+            matches = cursor.getInt(6);
             matches++;
             db.execSQL("UPDATE teams SET matchesPlayed=" + matches + " WHERE _id='" + _id + "';");
 
@@ -119,24 +124,24 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("UPDATE teams SET autoPoints=" + newAutoP + " WHERE _id='" + _id + "';");
 
             ////****UPDATE AUTO RUN****////
-            oldARun = cursor.getFloat(4)*matches;
+            oldARun = cursor.getFloat(3)*matches;
             newARun = (oldARun + autoRun) / matches;
             db.execSQL("UPDATE teams SET autoRun=" + newARun + " WHERE _id='" + _id + "';");
 
             ////****UPDATE CLIMB****////
-            oldClimb = cursor.getFloat(6)*matches;
+            oldClimb = cursor.getFloat(5)*matches;
             newClimb = (oldClimb + climb) / matches;
             db.execSQL("UPDATE teams SET climb=" + newClimb + " WHERE _id='" + _id + "';");
 
             ////****UPDATE VAULT POINTS****////
-            oldVault = cursor.getInt(5);
+            oldVault = cursor.getInt(4);
             newVault = vaultPoints + oldVault;
             db.execSQL("UPDATE teams SET vaultPoints=" + newVault + " WHERE _id='" + _id + "';");
 
         }
-        else {
-            db.execSQL("INSERT INTO " + SQL_TABLE_NAME + " VALUES (" + _id + ", " + teleop + ", '" + autoPoints + "');");
-            Log.v("minto", "INSERT ONE");
+        else { //There is not yet an entry for this team, create an entry
+            db.execSQL("INSERT INTO " + SQL_TABLE_NAME + " VALUES (" + _id + ", " + teleop + ", " + autoPoints + ", " + autoRun + ", " + vaultPoints + ", " + climb + ", " + matches + ");"); //MOST RECENTLELY CHANGED
+            Log.v("minto", "INSERT ONE " + _id);
         }
 
         db.close();
@@ -177,7 +182,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Cursor getAllEntriesCursor() {
         SQLiteDatabase db = this .getWritableDatabase();
-        String returnString = "";
         Cursor cursor;
         cursor = db.rawQuery("SELECT * FROM " + SQL_TABLE_NAME + ";", null);
 

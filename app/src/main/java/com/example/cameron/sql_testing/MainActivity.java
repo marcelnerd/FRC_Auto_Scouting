@@ -39,9 +39,9 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
-        handler.helper.onUpgrade(handler.helper.getWritableDatabase(), 4, 5);
-        for(int i = 0; i < 80; i++) {
-            handler.getMatchData(String.format("/match/%1$s_qm%2$d", "2018mndu", currentMatch));
+        //handler.helper.onUpgrade(handler.helper.getWritableDatabase(), 4, 5);
+        for(int i = 1; i < 80; i++) {
+            handler.getMatchData(String.format("/match/%1$s_qm%2$d", "2018mndu", i));
         }
 
         FrodoCursorAdapter todoAdapter = new FrodoCursorAdapter(this, TBAHandler.helper.getAllEntriesCursor());

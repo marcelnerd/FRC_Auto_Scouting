@@ -32,13 +32,13 @@ public class TBAListener implements Response.Listener<JSONObject> {
         FRC2018Team team = null;
         //Log.v("minto", response.toString());
 
-        try {
+        /*try {
             if (Integer.parseInt(response.getString("match_number")) < MainActivity.getCurrentMatch()) {
                 return;
             }
         } catch(JSONException e) {
             e.printStackTrace();
-        }
+        } */
 
         this.json = response;
         try {

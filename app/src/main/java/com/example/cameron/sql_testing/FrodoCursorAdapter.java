@@ -44,7 +44,7 @@ public class FrodoCursorAdapter extends CursorAdapter {
 
         // Populate fields with extracted properties
         teamNumText.setText(teamNum);
-        telePointsText.setText(String.valueOf(teleopPoints));
+        telePointsText.setText(teleopPoints);
         autoPointsText.setText(autoPoints);
         climbText.setText(climb);
         vaultPointsText.setText(vaultPoints);
