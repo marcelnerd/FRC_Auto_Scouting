@@ -124,12 +124,12 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("UPDATE teams SET autoPoints=" + newAutoP + " WHERE _id='" + _id + "';");
 
             ////****UPDATE AUTO RUN****////
-            oldARun = cursor.getFloat(3)*matches;
+            oldARun = cursor.getFloat(3)*(matches-1);
             newARun = (oldARun + autoRun) / matches;
             db.execSQL("UPDATE teams SET autoRun=" + newARun + " WHERE _id='" + _id + "';");
 
             ////****UPDATE CLIMB****////
-            oldClimb = cursor.getFloat(5)*matches;
+            oldClimb = cursor.getFloat(5)*(matches-1);
             newClimb = (oldClimb + climb) / matches;
             db.execSQL("UPDATE teams SET climb=" + newClimb + " WHERE _id='" + _id + "';");
 
